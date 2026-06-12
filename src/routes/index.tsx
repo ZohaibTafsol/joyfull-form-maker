@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/")({
@@ -8,7 +9,20 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "1099ly is the modern IRS-authorized eFiling platform for 1099, W-2, 94x, 1042 and 1095 forms. Real-time TIN matching, bulk import, state filing." },
       { property: "og:title", content: "1099ly — eFile 1099, W-2, 94x, 1042 & ACA forms" },
       { property: "og:description", content: "Fast, accurate, on-time eFiling for finance teams and accountants." },
+      { property: "og:url", content: "/" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "1099ly",
+        description: "IRS-authorized eFiling platform for 1099, W-2, 94x, 1042 and ACA forms.",
+        url: "/",
+      }),
+    }],
   }),
   component: Index,
 });
@@ -163,9 +177,9 @@ function NavBar() {
                 </div>
               </MegaItem>
 
-              <li><a href="#" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">API</a></li>
-              <li><a href="#" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">EFTPS</a></li>
-              <li><a href="#pricing" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">Pricing</a></li>
+              <li><Link to="/forms" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">Forms</Link></li>
+              <li><Link to="/pricing" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">Pricing</Link></li>
+              <li><Link to="/about" className="text-sm font-medium text-neutral-600 hover:text-neutral-900">About</Link></li>
 
               <MegaItem label="Resources">
                 <div className="grid grid-cols-2 gap-2">
@@ -178,11 +192,11 @@ function NavBar() {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <a href="#" className="hidden text-sm font-medium text-neutral-600 hover:text-neutral-900 md:inline">Get a Demo</a>
-          <a href="#" className="hidden text-sm font-medium text-neutral-600 hover:text-neutral-900 md:inline">Sign in</a>
-          <a href="#" className="rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white ring-1 ring-brand-primary transition-transform hover:scale-[1.02] active:scale-95">
+          <Link to="/contact" className="hidden text-sm font-medium text-neutral-600 hover:text-neutral-900 md:inline">Get a Demo</Link>
+          <Link to="/login" className="hidden text-sm font-medium text-neutral-600 hover:text-neutral-900 md:inline">Sign in</Link>
+          <Link to="/signup" className="rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white ring-1 ring-brand-primary transition-transform hover:scale-[1.02] active:scale-95">
             Sign up
-          </a>
+          </Link>
         </div>
       </div>
     </header>
