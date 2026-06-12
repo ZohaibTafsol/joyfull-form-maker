@@ -81,10 +81,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "1099ly is the modern IRS-authorized eFiling platform for 1099, W-2, 94x, 1042 and 1095 forms. Fast, accurate, and on time." },
       { name: "author", content: "1099ly" },
       { property: "og:title", content: "1099ly — eFile 1099, W-2, 94x, 1042 & ACA forms" },
-      { property: "og:description", content: "The modern IRS-authorized eFiling platform for finance teams and accountants." },
+      { property: "og:description", content: "1099ly is the modern IRS-authorized eFiling platform for 1099, W-2, 94x, 1042 and 1095 forms. Fast, accurate, and on time." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "1099ly — eFile 1099, W-2, 94x, 1042 & ACA forms" },
+      { name: "twitter:description", content: "1099ly is the modern IRS-authorized eFiling platform for 1099, W-2, 94x, 1042 and 1095 forms. Fast, accurate, and on time." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2b8968d1-4aa2-457f-abbc-dfc783259178/id-preview-cefb626a--01996be9-a8a6-434b-94db-95154a3dd395.lovable.app-1781280883429.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2b8968d1-4aa2-457f-abbc-dfc783259178/id-preview-cefb626a--01996be9-a8a6-434b-94db-95154a3dd395.lovable.app-1781280883429.png" },
     ],
     links: [
       {
