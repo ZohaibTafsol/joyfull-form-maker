@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/dashboard")({
@@ -80,7 +80,7 @@ const DEADLINES = [
 
 function Icon({ name, className = "size-4" }: { name: string; className?: string }) {
   const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  const paths: Record<string, JSX.Element> = {
+  const paths: Record<string, ReactNode> = {
     home: <><path d="M3 11 12 4l9 7" /><path d="M5 10v10h14V10" /></>,
     file: <><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5" /></>,
     doc: <><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5" /><path d="M9 14h6M9 17h4" /></>,
