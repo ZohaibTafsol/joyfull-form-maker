@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, type ReactNode, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 
-export const Route = createFileRoute("/dashboard/payers")({
+export const Route = createFileRoute("/dashboard_/payers")({
   head: () => ({
     meta: [
       { title: "Payers — 1099ly Dashboard" },
