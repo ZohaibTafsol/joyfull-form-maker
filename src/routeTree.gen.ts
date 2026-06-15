@@ -18,6 +18,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRecipientsRouteImport } from './routes/dashboard_.recipients'
 import { Route as DashboardPayersRouteImport } from './routes/dashboard_.payers'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRecipientsRoute = DashboardRecipientsRouteImport.update({
+  id: '/dashboard_/recipients',
+  path: '/dashboard/recipients',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardPayersRoute = DashboardPayersRouteImport.update({
   id: '/dashboard_/payers',
   path: '/dashboard/payers',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/payers': typeof DashboardPayersRoute
+  '/dashboard/recipients': typeof DashboardRecipientsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/payers': typeof DashboardPayersRoute
+  '/dashboard/recipients': typeof DashboardRecipientsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard_/payers': typeof DashboardPayersRoute
+  '/dashboard_/recipients': typeof DashboardRecipientsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard/payers'
+    | '/dashboard/recipients'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard/payers'
+    | '/dashboard/recipients'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard_/payers'
+    | '/dashboard_/recipients'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   DashboardPayersRoute: typeof DashboardPayersRoute
+  DashboardRecipientsRoute: typeof DashboardRecipientsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard_/recipients': {
+      id: '/dashboard_/recipients'
+      path: '/dashboard/recipients'
+      fullPath: '/dashboard/recipients'
+      preLoaderRoute: typeof DashboardRecipientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard_/payers': {
       id: '/dashboard_/payers'
       path: '/dashboard/payers'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   DashboardPayersRoute: DashboardPayersRoute,
+  DashboardRecipientsRoute: DashboardRecipientsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
