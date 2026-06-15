@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 
@@ -119,6 +119,7 @@ function statusStyle(s: string) {
 function DashboardPage() {
   const [active, setActive] = useState("home");
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-neutral-100 font-sans text-neutral-900 selection:bg-brand-accent/30">
@@ -169,7 +170,13 @@ function DashboardPage() {
                     return (
                       <li key={item.key}>
                         <button
-                          onClick={() => setActive(item.key)}
+                          onClick={() => {
+                            if (item.key === "payers") {
+                              navigate({ to: "/dashboard/payers" });
+                              return;
+                            }
+                            setActive(item.key);
+                          }}
                           className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                             isActive
                               ? "bg-brand-primary/8 text-brand-primary"
