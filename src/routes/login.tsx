@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
+import { useAuth } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -19,6 +21,35 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const [showPw, setShowPw] = useState(false);
+  const { login, verifyMfa, mfaPending } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"credentials" | "mfa">(mfaPending ? "mfa" : "credentials");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      if (step === "credentials") {
+        const r = await login(email, password);
+        if (r.mfa_required) setStep("mfa");
+        else navigate({ to: "/dashboard" });
+      } else {
+        await verifyMfa(otp);
+        navigate({ to: "/dashboard" });
+      }
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="grid min-h-screen bg-neutral-50 font-sans text-neutral-900 lg:grid-cols-2">
       {/* Left panel — editorial */}
@@ -51,47 +82,92 @@ function LoginPage() {
           <div className="lg:hidden">
             <Link to="/"><Logo /></Link>
           </div>
-          <h1 className="mt-8 font-display text-4xl tracking-tight md:text-5xl">Welcome back</h1>
-          <p className="mt-2 text-sm text-neutral-500">Sign in to continue to your 1099ly workspace.</p>
+          <h1 className="mt-8 font-display text-4xl tracking-tight md:text-5xl">
+            {step === "credentials" ? "Welcome back" : "Two-factor"}
+          </h1>
+          <p className="mt-2 text-sm text-neutral-500">
+            {step === "credentials"
+              ? "Sign in to continue to your 1099ly workspace."
+              : "Enter the 6-digit code from your authenticator app."}
+          </p>
 
-          <form
-            className="mt-10 space-y-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <label className="block">
-              <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">Email</span>
-              <input type="email" required placeholder="you@company.com" className="mt-1.5 block w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/15" />
-            </label>
-            <label className="block">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">Password</span>
-                <a href="#" className="text-xs font-medium text-brand-primary hover:underline">Forgot?</a>
-              </div>
-              <div className="relative mt-1.5">
-                <input type={showPw ? "text" : "password"} required minLength={8} placeholder="••••••••" className="block w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 pr-16 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/15" />
-                <button type="button" onClick={() => setShowPw((s) => !s)} className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-neutral-500 hover:text-neutral-900">
-                  {showPw ? "Hide" : "Show"}
-                </button>
-              </div>
-            </label>
+          {error && (
+            <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              {error}
+            </div>
+          )}
 
-            <label className="flex items-center gap-2 text-sm text-neutral-600">
-              <input type="checkbox" className="size-4 rounded border-neutral-300" /> Keep me signed in
-            </label>
+          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+            {step === "credentials" ? (
+              <>
+                <label className="block">
+                  <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">Email</span>
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="mt-1.5 block w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/15"
+                  />
+                </label>
+                <label className="block">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">Password</span>
+                    <a href="#" className="text-xs font-medium text-brand-primary hover:underline">Forgot?</a>
+                  </div>
+                  <div className="relative mt-1.5">
+                    <input
+                      type={showPw ? "text" : "password"}
+                      required
+                      minLength={8}
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="block w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 pr-16 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/15"
+                    />
+                    <button type="button" onClick={() => setShowPw((s) => !s)} className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-neutral-500 hover:text-neutral-900">
+                      {showPw ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </label>
+              </>
+            ) : (
+              <label className="block">
+                <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">Authentication code</span>
+                <input
+                  inputMode="numeric"
+                  pattern="\d{6}"
+                  maxLength={6}
+                  required
+                  autoFocus
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  placeholder="123456"
+                  className="mt-1.5 block w-full rounded-lg border border-neutral-200 bg-white px-3 py-3 text-center font-mono text-lg tracking-[0.5em] focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/15"
+                />
+              </label>
+            )}
 
-            <button type="submit" className="w-full rounded-full bg-brand-primary py-3 text-sm font-medium text-white ring-1 ring-brand-primary transition-transform hover:scale-[1.01] active:scale-95">
-              Sign in
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-full bg-brand-primary py-3 text-sm font-medium text-white ring-1 ring-brand-primary transition-transform hover:scale-[1.01] active:scale-95 disabled:opacity-60"
+            >
+              {loading ? "Please wait…" : step === "credentials" ? "Sign in" : "Verify code"}
             </button>
 
-            <div className="flex items-center gap-3 py-2 text-xs text-neutral-400">
-              <div className="h-px flex-1 bg-neutral-200" /> or continue with <div className="h-px flex-1 bg-neutral-200" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button type="button" className="rounded-full bg-white py-2.5 text-sm font-medium ring-1 ring-black/10 hover:bg-neutral-50">Google</button>
-              <button type="button" className="rounded-full bg-white py-2.5 text-sm font-medium ring-1 ring-black/10 hover:bg-neutral-50">SSO</button>
-            </div>
+            {step === "mfa" && (
+              <button
+                type="button"
+                onClick={() => { setStep("credentials"); setOtp(""); }}
+                className="w-full text-center text-xs font-medium text-neutral-500 hover:text-neutral-900"
+              >
+                Back to sign-in
+              </button>
+            )}
           </form>
 
           <p className="mt-10 text-sm text-neutral-500">
